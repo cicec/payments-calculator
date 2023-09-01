@@ -14,10 +14,10 @@ const IndexPage: FC = () => {
   const [configuration, setConfiguration] = useState({
     numberOfYears: 30,
     totalAssets: 10,
-    annualizedRate: 20,
+    annualizedRate: 2.5,
     income: 20,
     incomeIncreaseRate: 8,
-    expense: 10,
+    expense: 5,
     inflationRate: 4,
     maximumIncome: 50,
     minimumIncome: 0,
@@ -180,6 +180,29 @@ const IndexPage: FC = () => {
 
         <div className={style.row}>
           <Input
+            classNames={{
+              input: ['flex-auto'],
+            }}
+            value={String(configuration.workingYears)}
+            type="number"
+            label="工作至"
+            labelPlacement="outside-left"
+            startContent={
+              <div className="pointer-events-none flex items-center">
+                <span className="text-default-400 text-small">第</span>
+              </div>
+            }
+            endContent={
+              <div className="pointer-events-none flex items-center">
+                <span className="text-default-400 text-small whitespace-nowrap">年</span>
+              </div>
+            }
+            onChange={bindChangeEvent('workingYears')}
+          />
+        </div>
+
+        <div className={style.row}>
+          <Input
             value={String(configuration.totalAssets)}
             type="number"
             label="现有存款"
@@ -227,26 +250,6 @@ const IndexPage: FC = () => {
               </div>
             }
             onChange={bindChangeEvent('income')}
-          />
-        </div>
-
-        <div className={style.row}>
-          <Input
-            value={String(configuration.workingYears)}
-            type="number"
-            label="工作至"
-            labelPlacement="outside-left"
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">第</span>
-              </div>
-            }
-            endContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small whitespace-nowrap">年</span>
-              </div>
-            }
-            onChange={bindChangeEvent('workingYears')}
           />
         </div>
 

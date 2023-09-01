@@ -6,6 +6,24 @@
   box-sizing: border-box;
 }
 
+:root {
+  --positionX: 20px;
+  --positionXOpposite: -20px;
+  --positionY: 20px;
+  --positionYOpposite: -20px;
+  --angle: 145deg;
+  --blur: 60px;
+  --textColor: #001f3f;
+  --textColorOpposite: #e0e0e0;
+  --baseColor: #e0e0e0;
+  --darkColor: #bebebe;
+  --lightColor: #ffffff;
+  --firstGradientColor: #e0e0e0;
+  --secondGradientColor: #e0e0e0;
+  --size: 300px;
+  --radius: 50px;
+}
+
 body {
   margin: 0;
   padding: 0;
