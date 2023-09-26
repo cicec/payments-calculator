@@ -86,10 +86,14 @@ export class ChartHelper {
         } else {
           Datasets.income.push(income * (1 + minimumIncomeIncreaseRate / 100));
         }
-      } else if (income >= maximumIncome) {
-        Datasets.income.push(maximumIncome);
       } else {
-        Datasets.income.push(income * (1 + incomeIncreaseRate / 100));
+        const nextIncome = income * (1 + incomeIncreaseRate / 100);
+
+        if (nextIncome >= maximumIncome) {
+          Datasets.income.push(maximumIncome);
+        } else {
+          Datasets.income.push(nextIncome);
+        }
       }
     });
 
@@ -104,7 +108,7 @@ export class ChartHelper {
           tension: 0.4,
         },
         {
-          label: '年收入',
+          label: '主动收入',
           data: Datasets.income,
           fill: false,
           cubicInterpolationMode: 'monotone',
