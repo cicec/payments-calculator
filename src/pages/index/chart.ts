@@ -2,6 +2,7 @@ import { Chart, registerables } from 'chart.js';
 import _ from 'lodash';
 
 import { Configuration } from './interfaces';
+import { exec } from './utils';
 
 Chart.register(...registerables);
 
@@ -69,32 +70,39 @@ export class ChartHelper {
 
     Array.from({ length: numberOfYears }).forEach((_value, index) => {
       const year = index + 1;
-      const { totalAssets, income, expense } = _.mapValues(
-        Datasets,
-        dataset => _.last(dataset) as number
-      );
+      const {
+        totalAssets: previousTotalAssets,
+        income: previousIncome,
+        expense: previousExpense,
+      } = _.mapValues(Datasets, dataset => _.last(dataset) as number);
 
-      Datasets.totalAssets.push(
-        totalAssets + (totalAssets * annualizedRate) / 100 + income - expense
-      );
-      Datasets.passiveIncome.push(totalAssets * (annualizedRate / 100));
-      Datasets.expense.push(expense * (1 + inflationRate / 100));
-
-      if (year > workingYears) {
-        if (year === workingYears + 1) {
-          Datasets.income.push(minimumIncome);
+      const income = exec(() => {
+        if (year >= workingYears) {
+          if (year === workingYears) {
+            return minimumIncome;
+          } else {
+            return previousIncome * (1 + minimumIncomeIncreaseRate / 100);
+          }
         } else {
-          Datasets.income.push(income * (1 + minimumIncomeIncreaseRate / 100));
-        }
-      } else {
-        const nextIncome = income * (1 + incomeIncreaseRate / 100);
+          const nextIncome = previousIncome * (1 + incomeIncreaseRate / 100);
 
-        if (nextIncome >= maximumIncome) {
-          Datasets.income.push(maximumIncome);
-        } else {
-          Datasets.income.push(nextIncome);
+          if (nextIncome >= maximumIncome) {
+            return maximumIncome;
+          } else {
+            return nextIncome;
+          }
         }
-      }
+      });
+
+      const expense = previousExpense * (1 + inflationRate / 100);
+      const passiveIncome = previousTotalAssets * (annualizedRate / 100);
+      const totalAssets =
+        previousTotalAssets + (previousTotalAssets * annualizedRate) / 100 + income - expense;
+
+      Datasets.income.push(income);
+      Datasets.expense.push(expense);
+      Datasets.passiveIncome.push(passiveIncome);
+      Datasets.totalAssets.push(totalAssets);
     });
 
     this.chart.data = {
